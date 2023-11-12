@@ -1,5 +1,7 @@
 # libsodium-cmake
 
+NOTE: this is made specifically for use in Globed, not general purpose. You should probably see the original repository instead.
+
 ## Description
 
 CMakeWrapper for [libsodium](https://github.com/jedisct1/libsodium), the modern, portable, easy to use crypto library.
