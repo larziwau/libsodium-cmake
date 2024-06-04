@@ -1,8 +1,8 @@
 # libsodium-cmake
 
-NOTE: this is made specifically for use in Globed, not for general purpose use. I didn't want to spend time configuring stuff and I just deleted everything here that is not needed for my purpose.
+NOTE: this is made specifically for use in Globed, not for general purpose use. I didn't want to spend time configuring stuff and I just deleted everything here that is not needed for my purpose (i.e. tests).
 
-This fork bumps the version to 1.0.19, disables tests and explicitly enables the static library build.
+This fork bumps the version to 1.0.20, disables tests and explicitly enables the static library build.
 
 You should probably see the [original repository](https://github.com/robinlinden/libsodium-cmake) instead for any other purpose.
 

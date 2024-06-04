@@ -41,9 +41,9 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 # Variables that need to be exported to version.h.in
-set(VERSION 1.0.19)
-set(SODIUM_LIBRARY_VERSION_MAJOR 10)
-set(SODIUM_LIBRARY_VERSION_MINOR 3)
+set(VERSION 1.0.20)
+set(SODIUM_LIBRARY_VERSION_MAJOR 28)
+set(SODIUM_LIBRARY_VERSION_MINOR 0)
 
 configure_file(
     libsodium/src/libsodium/include/sodium/version.h.in
