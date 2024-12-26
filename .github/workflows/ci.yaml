@@ -1,6 +1,9 @@
-name: ci
+name: CI
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   ci:
@@ -15,65 +18,74 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: gcc-static
-            os: ubuntu-22.04
+          - name: GCC Static
+            os: ubuntu-latest
             compiler: gcc
             generator: Ninja
             cmake-args: "-DBUILD_SHARED_LIBS=OFF"
-          - name: gcc-dynamic
-            os: ubuntu-22.04
+          - name: GCC Dynamic
+            os: ubuntu-latest
             compiler: gcc
             generator: Ninja
             cmake-args: "-DBUILD_SHARED_LIBS=ON"
-          - name: gcc-minimal
-            os: ubuntu-22.04
+          - name: GCC Minimal
+            os: ubuntu-latest
             compiler: gcc
             generator: Ninja
             cmake-args: "-DSODIUM_MINIMAL=ON"
-          - name: clang-static
-            os: ubuntu-22.04
+          - name: Clang Static
+            os: ubuntu-latest
             compiler: clang
             generator: Ninja
             cmake-args: "-DBUILD_SHARED_LIBS=OFF"
-          - name: clang-dynamic
-            os: ubuntu-22.04
+          - name: Clang Dynamic
+            os: ubuntu-latest
             compiler: clang
             generator: Ninja
             cmake-args: "-DBUILD_SHARED_LIBS=ON"
-          - name: clang-minimal
-            os: ubuntu-22.04
+          - name: Clang Minimal
+            os: ubuntu-latest
             compiler: clang
             generator: Ninja
             cmake-args: "-DSODIUM_MINIMAL=ON"
-          - name: msvc-x86
-            os: windows-2022
+          - name: MSVC x86
+            os: windows-latest
             generator: Visual Studio 17 2022
-            cmake-args: -A Win32
-          - name: msvc-x64
-            os: windows-2022
+            cmake-args: "-A Win32"
+          - name: MSVC x64
+            os: windows-latest
             generator: Visual Studio 17 2022
-            cmake-args: -A x64
+            cmake-args: "-A x64"
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           submodules: true
 
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.13"
 
-      - run: pip install cmake==3.24.0 ninja==1.10.2.3 --upgrade
+      - name: Setup Python modules
+        run: pip install cmake==3.31.3 ninja==1.12.1 --upgrade
 
       - run: echo "CC=${{ matrix.compiler }}" >> $GITHUB_ENV
         if: startsWith(matrix.os, 'ubuntu')
 
+      - name: Update submodules
+        run: git submodule update --remote --recursive
+
       - run: cmake -Wdev -Werror=dev -S . -B build -G "${{ matrix.generator }}" ${{ matrix.cmake-args }}
 
-      - run: cmake --build build
+      - name: Build
+        run: cmake --build build
 
-      - run: (cd build && ctest)
+      - name: Ubuntu debug
+        run: (cd build && ctest)
         if: startsWith(matrix.os, 'ubuntu')
 
-      - run: (cd build && ctest -C Debug )
+      - name: Windows debug
+        run: (cd build && ctest -C Debug)
         if: startsWith(matrix.os, 'windows')
